@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <string name="app_name">Accessibility Keeper</string>
+  <string name="description">Keeps accessibility permission when an app is force stopped</string>
+  <string name="summary">Force stopping an app normally turns off its accessibility services, so you have to allow them again. This module keeps them allowed for every app that uses accessibility.</string>
+  <string name="status_waiting">Waiting for the Xposed framework. Enable this module for System Framework in Vector.</string>
+  <string name="status_ready">Active in System Framework.</string>
+  <string name="keep_permission">Keep accessibility after a force stop</string>
+  <string name="after_force_stop">After a force stop</string>
+  <string name="mode_wait">Wait until the app is opened again</string>
+  <string name="mode_reconnect">Reconnect right away</string>
+  <string name="mode_note">While waiting, Settings may show the service as not working. It resumes as soon as the app is opened. Reconnecting right away starts the app\'s accessibility service again immediately.</string>
+  <string name="licenses">Open-source licenses</string>
+  <string name="apps_title">Apps</string>
+  <string name="apps_note">Turn off apps whose accessibility should be dropped by a force stop as usual. Every app is on by default.</string>
+</resources>

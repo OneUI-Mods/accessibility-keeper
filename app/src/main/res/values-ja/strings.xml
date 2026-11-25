@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <string name="app_name">Accessibility Keeper</string>
+  <string name="description">アプリを強制終了してもユーザー補助の許可を保つ</string>
+  <string name="summary">アプリを強制終了すると、通常はそのアプリのユーザー補助がオフになり、許可し直す必要があります。このモジュールは、ユーザー補助を使うすべてのアプリで許可を保ちます。</string>
+  <string name="status_waiting">Xposedフレームワークを待っています。VectorでこのモジュールをシステムフレームワークでONにしてください。</string>
+  <string name="status_ready">システムフレームワークで動作中です。</string>
+  <string name="keep_permission">強制終了してもユーザー補助を保つ</string>
+  <string name="after_force_stop">強制終了したあと</string>
+  <string name="mode_wait">次にアプリを開くまで待つ</string>
+  <string name="mode_reconnect">すぐに再接続する</string>
+  <string name="mode_note">待っている間、設定ではサービスが「動作していません」と表示されることがあります。アプリを開くとすぐに再開します。「すぐに再接続する」では、アプリのユーザー補助サービスがすぐに起動し直します。</string>
+  <string name="licenses">オープンソースライセンス</string>
+  <string name="apps_title">アプリ</string>
+  <string name="apps_note">強制終了で通常どおりユーザー補助をオフにしたいアプリは、ここでオフにします。初期設定ではすべてオンです。</string>
+</resources>
