@@ -5,7 +5,7 @@
 - `AccessibilityManagerService.onPackagesForceStoppedLocked(String[], AccessibilityUserState)` が、強制終了したパッケージのサービスを `mEnabledServices` とショートカットから外し、`enabled_accessibility_services` に書き戻す。
 - フックは、有効なサービスを持ち、利用者が除外していないパッケージを引数から外して元の処理を呼ぶ。外したサービスは `mBindingServices` から外し、モードに応じて `mCrashedServices` に入れる（待つ）か外して再接続させる。
 - プロセス終了で `AccessibilityServiceConnection.binderDied` が `mCrashedServices` に入れるため、「すぐ再接続」では直近に保持したサービスだけをそこから外して再接続させる。
-- 「待つ」では `ACTION_PACKAGE_UNSTOPPED` を受けて、そのパッケージのサービスを `mCrashedServices` から外し再接続させる。
+- 「待つ」でも、フック時点で停止状態でないアプリ（Shizukuのプロバイダや通知リスナーの再接続などで直後に起動し直したもの）は待たずに再接続させる。待っているアプリは `ACTION_PACKAGE_UNSTOPPED`（パッケージ名はdataまたはEXTRA_PACKAGE_NAME）を受けて、そのパッケージのサービスを `mCrashedServices` から外し再接続させる。
 
 ## 設定
 

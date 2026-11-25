@@ -89,26 +89,31 @@ internal class KeeperHooks(
                 val others = stopped.filter { it !in keptPackages }.toTypedArray()
                 if (others.isNotEmpty()) chain.proceed(arrayOf(others, state))
                 set(binding, state).removeAll(kept.toSet())
-                if (reconnect) {
-                    markRecent(kept)
-                    set(crashed, state).removeAll(kept.toSet())
-                    waiting.removeAll(kept.toSet())
-                } else {
-                    set(crashed, state).addAll(kept)
-                    waiting.addAll(kept)
-                    listen(chain.thisObject)
-                }
+                listen(chain.thisObject)
+                val pm = (context.get(chain.thisObject) as Context).packageManager
+                // An app that already started again (for example its own component) does not wait.
+                val (resume, wait) =
+                    kept.partition {
+                        reconnect ||
+                            runCatching { !pm.isPackageStopped(it.packageName) }.getOrDefault(false)
+                    }
+                markRecent(resume)
+                set(crashed, state).removeAll(resume.toSet())
+                waiting.removeAll(resume.toSet())
+                set(crashed, state).addAll(wait)
+                waiting.addAll(wait)
                 Log.i(
                     TAG,
-                    "KEPT ${kept.joinToString { it.flattenToShortString() }} reconnect=$reconnect",
+                    "KEPT ${kept.joinToString { it.flattenToShortString() }} reconnect=$reconnect waiting=${wait.size}",
                 )
                 true
             }
         handles +=
             framework.hook(binderDied).intercept { chain ->
                 val result = chain.proceed()
-                // A service that dies after the force stop is otherwise left marked as crashed.
-                if (active && reconnect) {
+                // A resumed service that dies after the force stop is otherwise left marked as
+                // crashed.
+                if (active) {
                     val name = component.get(chain.thisObject) as? ComponentName
                     val service = system.get(chain.thisObject)
                     if (name != null && service != null && recentlyKept(name)) {
@@ -143,7 +148,10 @@ internal class KeeperHooks(
         val listener =
             object : BroadcastReceiver() {
                 override fun onReceive(ignored: Context, intent: Intent) {
-                    val pkg = intent.data?.schemeSpecificPart ?: return
+                    val pkg =
+                        intent.data?.schemeSpecificPart
+                            ?: intent.getStringExtra(Intent.EXTRA_PACKAGE_NAME)
+                            ?: return
                     val manager = owner.get() ?: return
                     synchronized(getLock.invoke(manager)!!) {
                         val state = currentUserState.invoke(manager)!!
@@ -158,7 +166,8 @@ internal class KeeperHooks(
             }
         context.registerReceiver(
             listener,
-            IntentFilter(Intent.ACTION_PACKAGE_UNSTOPPED).apply { addDataScheme("package") },
+            // Delivered both with and without package data depending on the sender.
+            IntentFilter(Intent.ACTION_PACKAGE_UNSTOPPED),
             null,
             Handler(worker.looper),
             Context.RECEIVER_NOT_EXPORTED,
