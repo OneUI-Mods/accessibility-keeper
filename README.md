@@ -1,5 +1,7 @@
 # Accessibility Keeper
 
+インストールにはAndroid 17（API 37）以降が必要です。
+
 [日本語](README.md) · [English](README.en.md)
 
 アプリを強制終了しても、そのアプリのユーザー補助の許可が外れないようにするVector / Xposedモジュールです。Android 17、libxposed API 102に対応します。

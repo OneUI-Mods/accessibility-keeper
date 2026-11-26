@@ -1,5 +1,7 @@
 # Accessibility Keeper
 
+Installation requires Android 17 (API 37) or later.
+
 [日本語](README.md) · [English](README.en.md)
 
 A Vector / Xposed module that keeps an app's accessibility permission when the app is force stopped. Supports Android 17 with libxposed API 102.
